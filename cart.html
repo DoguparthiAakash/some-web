@@ -18,6 +18,7 @@
       <div class="logo">iShop</div>
       <nav>
         <a class="btn" href="/products.html">Products</a>
+        <a class="btn" href="/cart.html">Cart <span id="cart-count" class="cart-badge">0</span></a>
       </nav>
     </header>
 
@@ -32,33 +33,33 @@
     </main>
 
     <script>
-      // Render cart contents using same functions in script.js
+      // Use helpers provided by script.js to render cart page
       async function renderCartPage() {
-        try {
-          const res = await fetch(`${window.API_BASE || ''}/api/cart`);
-          if (!res.ok) throw new Error('No remote');
-          const json = await res.json();
-          const items = json.cart || [];
-          renderCartItems(items);
-        } catch (e) {
-          // local fallback
-          const local = JSON.parse(localStorage.getItem('ishop_cart_v1') || '[]');
-          renderCartItems(local.map(i => ({ id: i.id, product: i.product, quantity: i.quantity })));
-        }
-      }
-
-      function renderCartItems(items) {
+        const items = await window.getCartItems();
         const container = document.getElementById('cart-contents');
         if (!items.length) {
           container.innerHTML = '<p>Your cart is empty.</p>';
           return;
         }
-        container.innerHTML = '<ul>' + items.map(i => `<li>${i.product.name} x${i.quantity} - $${(i.product.price * i.quantity).toFixed(2)}</li>`).join('') + '</ul>';
+        container.innerHTML = '<ul>' + items.map(i => `<li>${i.product.name} x${i.quantity} - $${(i.product.price * i.quantity).toFixed(2)} <button data-id="${i.id}" class="btn remove-item">Remove</button></li>`).join('') + '</ul>';
+        container.querySelectorAll('.remove-item').forEach(btn => btn.addEventListener('click', async (e) => {
+          const id = parseInt(e.currentTarget.getAttribute('data-id'), 10);
+          await window.removeCartItem(id);
+          renderCartPage();
+        }));
       }
 
       document.addEventListener('DOMContentLoaded', () => {
         renderCartPage();
-        document.getElementById('checkout-btn').addEventListener('click', () => alert('Checkout is a demo-only flow.'));
+        document.getElementById('checkout-btn').addEventListener('click', () => {
+          if (confirm('Proceed to checkout? This will clear your cart in this demo.')) {
+            window.clearCart();
+            renderCartPage();
+            alert('Thank you — this is a demo checkout.');
+          }
+        });
+        // update header badge
+        window.updateCartBadge();
       });
     </script>
   </body>

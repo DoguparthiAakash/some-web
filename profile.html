@@ -18,7 +18,7 @@
       <div class="logo">iShop</div>
       <nav>
         <a class="btn" href="/products.html">Products</a>
-        <a class="btn" href="/cart.html">Cart</a>
+        <a class="btn" href="/cart.html">Cart <span id="cart-count" class="cart-badge">0</span></a>
       </nav>
     </header>
 
@@ -32,18 +32,42 @@
     </main>
 
     <script>
+      // Render and edit profile stored in localStorage (and try remote read)
       async function renderProfilePage() {
+        let profile = null;
         try {
-          const res = await fetch(`${window.API_BASE || ''}/api/profile`);
-          if (!res.ok) throw new Error('No remote');
-          const json = await res.json();
-          const p = json.profile;
-          document.getElementById('profile-content').innerHTML = `<p>Name: ${p.name}</p><p>Email: ${p.email}</p>`;
-        } catch (e) {
-          document.getElementById('profile-content').innerHTML = '<p>Profile not available (offline)</p>';
-        }
+          if (window.API_BASE) {
+            const res = await fetch(`${window.API_BASE}/api/profile`);
+            if (res.ok) {
+              const json = await res.json();
+              profile = json.profile;
+            }
+          }
+        } catch (e) { /* ignore */ }
+        // fallback to localStorage
+        const local = JSON.parse(localStorage.getItem('ishop_profile_v1') || 'null');
+        if (!profile && local) profile = local;
+
+        const container = document.getElementById('profile-content');
+        container.innerHTML = `
+          <form id="profile-form">
+            <label>Name:<br><input name="name" value="${profile ? profile.name : ''}" /></label><br>
+            <label>Email:<br><input name="email" value="${profile ? profile.email : ''}" /></label><br>
+            <button class="btn" type="submit">Save Profile</button>
+          </form>
+        `;
+        document.getElementById('profile-form').addEventListener('submit', (e) => {
+          e.preventDefault();
+          const form = e.currentTarget;
+          const p = { name: form.name.value.trim(), email: form.email.value.trim() };
+          localStorage.setItem('ishop_profile_v1', JSON.stringify(p));
+          alert('Profile saved locally.');
+        });
       }
-      document.addEventListener('DOMContentLoaded', () => renderProfilePage());
+      document.addEventListener('DOMContentLoaded', () => {
+        renderProfilePage();
+        window.updateCartBadge();
+      });
     </script>
   </body>
 </html>

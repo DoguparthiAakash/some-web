@@ -43,21 +43,41 @@ async function addToCartAPI(productId, quantity = 1, productData) {
   }
 }
 
-// Load products from backend; if that fails (e.g., hosted on GitHub Pages), keep static HTML and wire fallback handlers
+const PRODUCTS_JSON = '/data/products.json';
+
+// Load products from backend -> products.json -> static DOM
 async function loadProducts() {
+  // try remote API
   try {
-    const res = await fetch(`${API_BASE}/api/products`);
-    if (!res.ok) throw new Error('No API');
-    const data = await res.json();
-    if (data && data.products && data.products.length) {
-      renderProductGrid(data.products);
-      return;
+    if (API_BASE) {
+      const res = await fetch(`${API_BASE}/api/products`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.products && data.products.length) {
+          renderProductGrid(data.products);
+          updateCartBadge();
+          return;
+        }
+      }
     }
-  } catch (e) {
-    console.log('Backend not available, using static markup/local fallback.', e);
-  }
-  // Attach fallback listeners to existing static Add to Cart buttons
+  } catch (e) { console.log('Remote API not available', e); }
+
+  // try local products.json (works on GitHub Pages)
+  try {
+    const res = await fetch(PRODUCTS_JSON);
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.products) {
+        renderProductGrid(data.products);
+        updateCartBadge();
+        return;
+      }
+    }
+  } catch (e) { console.log('products.json not found', e); }
+
+  // fallback: keep existing static HTML and attach listeners
   attachFallbackListeners();
+  updateCartBadge();
 }
 
 function renderProductGrid(products) {
@@ -109,6 +129,7 @@ function attachFallbackListeners() {
       const price = parseFloat(priceText.replace(/[^0-9.]/g, '')) || 0;
       const product = { id: Date.now(), name, price };
       localAddToCart(product, 1);
+      updateCartBadge();
     });
   });
 }
@@ -137,9 +158,86 @@ function viewProfile() {
     const p = json.profile;
     alert(`Profile:\nName: ${p.name}\nEmail: ${p.email}`);
   }).catch(() => {
-    alert('Profile not available (offline)');
+    // show profile stored locally if available
+    const p = JSON.parse(localStorage.getItem('ishop_profile_v1') || 'null');
+    if (p) alert(`Profile:\nName: ${p.name}\nEmail: ${p.email}`);
+    else alert('Profile not available (offline)');
   });
 }
+
+// Cart helpers for UI pages
+async function getCartItems() {
+  // try remote
+  try {
+    if (API_BASE) {
+      const res = await fetch(`${API_BASE}/api/cart`);
+      if (res.ok) {
+        const json = await res.json();
+        return (json.cart || []).map(i => ({ id: i.id, product: i.product, quantity: i.quantity }));
+      }
+    }
+  } catch (e) {}
+  // fallback to localStorage
+  return getLocalCart();
+}
+
+async function removeCartItem(id) {
+  try {
+    if (API_BASE) {
+      const res = await fetch(`${API_BASE}/api/cart/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        updateCartBadge();
+        return true;
+      }
+    }
+  } catch (e) {}
+  // local fallback
+  let cart = getLocalCart();
+  cart = cart.filter(c => c.id !== id);
+  saveLocalCart(cart);
+  updateCartBadge();
+  return true;
+}
+
+function clearCart() {
+  try {
+    // best-effort: remote clear not implemented on demo backend
+    localStorage.removeItem(LOCAL_CART_KEY);
+    updateCartBadge();
+    return true;
+  } catch (e) { return false; }
+}
+
+function updateCartBadge() {
+  let count = 0;
+  try {
+    const local = getLocalCart();
+    count = local.reduce((s, i) => s + (i.quantity || 0), 0);
+  } catch (e) { count = 0; }
+  // Try remote cart count too (async)
+  if (API_BASE) {
+    fetch(`${API_BASE}/api/cart`).then(r => r.ok ? r.json() : null).then(json => {
+      if (json && json.cart) {
+        const remoteCount = json.cart.reduce((s, i) => s + (i.quantity || 0), 0);
+        count = Math.max(count, remoteCount);
+        document.querySelectorAll('#cart-count').forEach(el => el.textContent = remoteCount);
+      } else {
+        document.querySelectorAll('#cart-count').forEach(el => el.textContent = count);
+      }
+    }).catch(() => {
+      document.querySelectorAll('#cart-count').forEach(el => el.textContent = count);
+    });
+  } else {
+    document.querySelectorAll('#cart-count').forEach(el => el.textContent = count);
+  }
+}
+
+// Expose some helpers to pages
+window.loadProducts = loadProducts;
+window.getCartItems = getCartItems;
+window.removeCartItem = removeCartItem;
+window.clearCart = clearCart;
+window.updateCartBadge = updateCartBadge;
 
 // Keep searchProducts behavior (works on dynamically rendered or static cards)
 function searchProducts() {
