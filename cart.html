@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="api-base" content="" />
+    <script>
+      (function(){
+        try { var m = document.querySelector('meta[name="api-base"]'); if (m && m.content) window.API_BASE = m.content.replace(/\/+$/, ''); else window.API_BASE = ''; } catch(e){ window.API_BASE = ''; }
+      })();
+    </script>
+    <title>Cart - iShop</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <header class="header">
+      <div class="logo">iShop</div>
+      <nav>
+        <a class="btn" href="/products.html">Products</a>
+      </nav>
+    </header>
+
+    <main class="main-content">
+      <section class="cart">
+        <h2>Your Cart</h2>
+        <div id="cart-contents">
+          <!-- Cart content will be loaded by script.js (remote or local fallback) -->
+        </div>
+        <button class="btn" id="checkout-btn">Checkout</button>
+      </section>
+    </main>
+
+    <script>
+      // Render cart contents using same functions in script.js
+      async function renderCartPage() {
+        try {
+          const res = await fetch(`${window.API_BASE || ''}/api/cart`);
+          if (!res.ok) throw new Error('No remote');
+          const json = await res.json();
+          const items = json.cart || [];
+          renderCartItems(items);
+        } catch (e) {
+          // local fallback
+          const local = JSON.parse(localStorage.getItem('ishop_cart_v1') || '[]');
+          renderCartItems(local.map(i => ({ id: i.id, product: i.product, quantity: i.quantity })));
+        }
+      }
+
+      function renderCartItems(items) {
+        const container = document.getElementById('cart-contents');
+        if (!items.length) {
+          container.innerHTML = '<p>Your cart is empty.</p>';
+          return;
+        }
+        container.innerHTML = '<ul>' + items.map(i => `<li>${i.product.name} x${i.quantity} - $${(i.product.price * i.quantity).toFixed(2)}</li>`).join('') + '</ul>';
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        renderCartPage();
+        document.getElementById('checkout-btn').addEventListener('click', () => alert('Checkout is a demo-only flow.'));
+      });
+    </script>
+  </body>
+</html>

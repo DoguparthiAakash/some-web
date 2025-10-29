@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="api-base" content="" />
+    <script>
+      (function(){
+        try { var m = document.querySelector('meta[name="api-base"]'); if (m && m.content) window.API_BASE = m.content.replace(/\/+$/, ''); else window.API_BASE = ''; } catch(e){ window.API_BASE = ''; }
+      })();
+    </script>
+    <title>Products - iShop</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <header class="header">
+      <div class="logo">iShop</div>
+      <div class="search-bar">
+        <input id="search-input" type="text" placeholder="Search" />
+        <button class="btn" onclick="searchProducts()">Search</button>
+      </div>
+      <div class="user-options">
+        <a class="btn" href="/profile.html">Profile</a>
+        <a class="btn" href="/cart.html">Cart</a>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <section class="products">
+        <h2>Products</h2>
+        <div id="product-grid" class="product-grid">
+          <!-- If backend is available, products will be rendered here dynamically. -->
+          <!-- Static fallbacks (copied from index) -->
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

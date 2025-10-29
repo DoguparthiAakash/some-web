@@ -70,7 +70,13 @@ app.get('/api/profile', (req, res) => {
   res.json({ success: true, profile });
 });
 
-// Fallback to index.html for SPA-style requests
+// Serve UI pages explicitly
+app.get(['/','/index.html'], (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
+app.get('/products.html', (req, res) => res.sendFile(path.join(__dirname, 'products.html')));
+app.get('/cart.html', (req, res) => res.sendFile(path.join(__dirname, 'cart.html')));
+app.get('/profile.html', (req, res) => res.sendFile(path.join(__dirname, 'profile.html')));
+
+// Fallback for other routes: send index for SPA compatibility
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="api-base" content="" />
+    <script>
+      (function(){
+        try { var m = document.querySelector('meta[name="api-base"]'); if (m && m.content) window.API_BASE = m.content.replace(/\/+$/, ''); else window.API_BASE = ''; } catch(e){ window.API_BASE = ''; }
+      })();
+    </script>
+    <title>Profile - iShop</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <header class="header">
+      <div class="logo">iShop</div>
+      <nav>
+        <a class="btn" href="/products.html">Products</a>
+        <a class="btn" href="/cart.html">Cart</a>
+      </nav>
+    </header>
+
+    <main class="main-content">
+      <section class="profile">
+        <h2>Your Profile</h2>
+        <div id="profile-content">
+          <!-- Profile info loaded by script.js or fallback -->
+        </div>
+      </section>
+    </main>
+
+    <script>
+      async function renderProfilePage() {
+        try {
+          const res = await fetch(`${window.API_BASE || ''}/api/profile`);
+          if (!res.ok) throw new Error('No remote');
+          const json = await res.json();
+          const p = json.profile;
+          document.getElementById('profile-content').innerHTML = `<p>Name: ${p.name}</p><p>Email: ${p.email}</p>`;
+        } catch (e) {
+          document.getElementById('profile-content').innerHTML = '<p>Profile not available (offline)</p>';
+        }
+      }
+      document.addEventListener('DOMContentLoaded', () => renderProfilePage());
+    </script>
+  </body>
+</html>
