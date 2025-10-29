@@ -8,6 +8,12 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Check for GH_PAGES_PAT
+        run: |
+          if [ -z "${{ secrets.GH_PAGES_PAT }}" ]; then
+            echo "::error::GH_PAGES_PAT secret is missing. Please add a Personal Access Token (classic) with repo scope as GH_PAGES_PAT secret to your repository.";
+            exit 1;
+          fi
       - name: Checkout
         uses: actions/checkout@v4
 

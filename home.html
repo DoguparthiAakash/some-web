@@ -4,12 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="api-base" content="" />
-    <script>
-      (function(){
-        try { var m = document.querySelector('meta[name="api-base"]'); if (m && m.content) window.API_BASE = m.content.replace(/\/+$/, ''); else window.API_BASE = ''; } catch(e){ window.API_BASE = ''; }
-      })();
-    </script>
-    <title>Products - iShop</title>
+    <title>iShop Home</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="style.css" />
     <script src="script.js" defer></script>
   </head>
@@ -22,20 +18,20 @@
         <a class="btn" href="/cart.html">Cart <span id="cart-count" class="cart-badge">0</span></a>
         <a class="btn" href="/profile.html">Profile</a>
       </nav>
-      <div class="search-bar">
-        <input id="search-input" type="text" placeholder="Search" />
-        <button class="btn" onclick="searchProducts()">Search</button>
-      </div>
     </header>
-
     <main class="main-content">
-      <section class="products">
-        <h2>Products</h2>
-        <div id="product-grid" class="product-grid">
-          <!-- If backend is available, products will be rendered here dynamically. -->
-          <!-- Static fallbacks (copied from index) -->
+      <section class="banner">
+        <div class="banner-text">
+          <h1>Welcome to iShop</h1>
+          <p>Your favorite products, categories, and more.</p>
+          <p>
+            <a class="btn" href="/products.html">Browse Products</a>
+            <a class="btn" href="/cart.html">View Cart</a>
+            <a class="btn" href="/profile.html">Your Profile</a>
+          </p>
         </div>
       </section>
     </main>
+    <script>window.updateCartBadge && window.updateCartBadge();</script>
   </body>
 </html>
