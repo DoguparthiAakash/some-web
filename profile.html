@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="api-base" content="" />
+    <script>
+      (function(){
+        try { var m = document.querySelector('meta[name="api-base"]'); if (m && m.content) window.API_BASE = m.content.replace(/\/+$/, ''); else window.API_BASE = ''; } catch(e){ window.API_BASE = ''; }
+      })();
+    </script>
+    <title>Profile - iShop</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <header class="header">
+      <div class="logo">iShop</div>
+      <nav>
+        <a class="btn" href="/home.html">Home</a>
+        <a class="btn" href="/products.html">Products</a>
+        <a class="btn" href="/cart.html">Cart <span id="cart-count" class="cart-badge">0</span></a>
+        <a class="btn" href="/profile.html">Profile</a>
+      </nav>
+    </header>
+
+    <main class="main-content">
+      <section class="profile">
+        <h2>Your Profile</h2>
+        <div id="profile-content">
+          <!-- Profile info loaded by script.js or fallback -->
+        </div>
+      </section>
+    </main>
+
+    <script>
+      // Render and edit profile stored in localStorage (and try remote read)
+      async function renderProfilePage() {
+        let profile = null;
+        try {
+          if (window.API_BASE) {
+            const res = await fetch(`${window.API_BASE}/api/profile`);
+            if (res.ok) {
+              const json = await res.json();
+              profile = json.profile;
+            }
+          }
+        } catch (e) { /* ignore */ }
+        // fallback to localStorage
+        const local = JSON.parse(localStorage.getItem('ishop_profile_v1') || 'null');
+        if (!profile && local) profile = local;
+
+        const container = document.getElementById('profile-content');
+        container.innerHTML = `
+          <form id="profile-form">
+            <label>Name:<br><input name="name" value="${profile ? profile.name : ''}" /></label><br>
+            <label>Email:<br><input name="email" value="${profile ? profile.email : ''}" /></label><br>
+            <button class="btn" type="submit">Save Profile</button>
+          </form>
+        `;
+        document.getElementById('profile-form').addEventListener('submit', (e) => {
+          e.preventDefault();
+          const form = e.currentTarget;
+          const p = { name: form.name.value.trim(), email: form.email.value.trim() };
+          localStorage.setItem('ishop_profile_v1', JSON.stringify(p));
+          alert('Profile saved locally.');
+        });
+      }
+      document.addEventListener('DOMContentLoaded', () => {
+        renderProfilePage();
+        window.updateCartBadge();
+      });
+    </script>
+  </body>
+</html>

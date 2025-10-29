@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Set your deployed backend base URL here when hosting frontend on GitHub Pages.
+         Example: <meta name="api-base" content="https://my-backend.example.com"> -->
+    <meta name="api-base" content="" />
+    <script>
+      // Initialize API_BASE from the meta tag so GitHub Pages can point to a remote backend.
+      (function(){
+        try {
+          var m = document.querySelector('meta[name="api-base"]');
+          if (m && m.content) window.API_BASE = m.content.replace(/\/+$/, '');
+          else window.API_BASE = '';
+        } catch (e) { window.API_BASE = ''; }
+      })();
+    </script>
+    <title>iOS Shop</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <!-- Redirect to home.html for real landing page -->
+    <main class="main-content">
+      <section class="banner">
+        <div class="banner-text">
+          <h1>Welcome to iShop</h1>
+          <p>Redirecting to the home page…</p>
+          <p><a class="btn" href="/home.html">Go to Home</a></p>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      // Auto-redirect to home.html for GitHub Pages
+      setTimeout(() => { window.location.href = '/home.html'; }, 800);
+    </script>
+  </body>
+</html>

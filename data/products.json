@@ -1,0 +1,44 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "SleekFit Wireless Earbuds",
+      "description": "High-quality wireless earbuds with noise cancellation.",
+      "price": 25.99,
+      "image": "https://m.media-amazon.com/images/I/61b1gqtQQAL._AC_SL1500_.jpg",
+      "rating": 3
+    },
+    {
+      "id": 2,
+      "name": "Adjustable Smartphone Stand",
+      "description": "Perfect for hands-free calls and videos.",
+      "price": 10.5,
+      "image": "https://m.media-amazon.com/images/I/614DlsmMxUL._AC_SS450_.jpg",
+      "rating": 4
+    },
+    {
+      "id": 3,
+      "name": "PowerBoost Portable Charger",
+      "description": "Charge on the go with this 10,000mAh power bank.",
+      "price": 19.99,
+      "image": "https://peeperly.in/cdn/shop/files/202406211144504106_202406081044572628_my-11134207-7r98z-lodrb25513rqf0_1800x1800.jpg?v=1718970423",
+      "rating": 3
+    },
+    {
+      "id": 4,
+      "name": "UltraSlim Wireless Keyboard",
+      "description": "Compact and stylish keyboard for everyday use.",
+      "price": 30.0,
+      "image": "https://www.hytac.global/wp-content/uploads/2022/09/HGK355_01.jpg",
+      "rating": 5
+    },
+    {
+      "id": 5,
+      "name": "SoundPro Bluetooth Speaker",
+      "description": "Experience high-quality sound with portability.",
+      "price": 40.0,
+      "image": "https://cdn.media.amplience.net/i/xcite/637278-02?img404=default&w=2048&qlt=75&fmt=auto/200",
+      "rating": 3
+    }
+  ]
+}
