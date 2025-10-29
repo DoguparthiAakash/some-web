@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://doguparthiaakash.github.io/some-web/sitemap.xml
