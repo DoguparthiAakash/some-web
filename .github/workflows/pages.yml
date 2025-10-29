@@ -17,6 +17,6 @@ jobs:
           # NOTE: If your repository disallows the default GITHUB_TOKEN from creating branches,
           # create a Personal Access Token (classic) with `repo` scope and add it as repository secret
           # named `GH_PAGES_PAT`, then set github_token to that secret below.
-          github_token: ${{ secrets.GH_PAGES_PAT }}
+          github_token: ${{ secrets.GITHUB_TOKEN}}
           publish_dir: ./
           publish_branch: gh-pages

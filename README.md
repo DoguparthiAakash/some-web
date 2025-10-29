@@ -60,3 +60,25 @@ How to point your GitHub Pages frontend to a deployed backend
 
 If you'd like, tell me which hosting provider you prefer and I can give step-by-step deployment instructions (I can also create a small `render.yaml`/`vercel.json`/`netlify` configuration depending on the provider).
 
+Troubleshooting Pages workflow permissions
+-----------------------------------------
+If the GitHub Actions workflow fails with a permission error like:
+
+  remote: Permission to <owner>/<repo>.git denied to github-actions[bot].
+
+You have two simple options to fix it:
+
+1) Allow workflows to write to the repository (quick, UI):
+	- Go to GitHub → your repository → Settings → Actions → General.
+	- Under "Workflow permissions" select "Read and write permissions" and enable "Allow GitHub Actions to create and approve pull requests" if present.
+	- Save. Re-run the Pages workflow.
+
+2) Create a Personal Access Token (PAT) and add it as a secret (works when repo settings are restricted):
+	- In GitHub (top-right) → Settings → Developer settings → Personal access tokens → "Tokens (classic)" → Generate new token.
+	- Give it a descriptive name (e.g., `gh-pages-deploy`), expiration you prefer, and the `repo` scope.
+	- Generate and copy the token.
+	- In your repository → Settings → Secrets and variables → Actions → New repository secret. Name it `GH_PAGES_PAT` and paste the token.
+	- Re-run the workflow (or push a commit) — the workflow uses `GH_PAGES_PAT` to push to `gh-pages`.
+
+I updated the workflow to use the `GH_PAGES_PAT` secret if present. If you'd like, I can also revert to a Pages-artifact workflow that uses the newer `deploy-pages` action (but that requires ensuring all action versions are supported in your repo).
+
