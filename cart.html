@@ -13,13 +13,17 @@
     <link rel="stylesheet" href="style.css" />
     <script src="script.js" defer></script>
     <style>
+      body {
+        background-color: #2f2f2f;
+        color: #fff;
+      }
       .cart {
         max-width: 800px;
         margin: 40px auto;
         padding: 20px;
-        background-color: #f9f9f9;
-        border: 1px solid #ddd;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        background-color: #333;
+        border: 1px solid #444;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
       }
       .cart ul {
         list-style: none;
@@ -28,7 +32,7 @@
       }
       .cart li {
         padding: 10px;
-        border-bottom: 1px solid #ccc;
+        border-bottom: 1px solid #555;
       }
       .cart li:last-child {
         border-bottom: none;
@@ -43,6 +47,49 @@
       }
       .remove-item:hover {
         background-color: #3e8e41;
+      }
+      .header {
+        background-color: #333;
+        color: #fff;
+        padding: 10px;
+        text-align: center;
+      }
+      .header .logo {
+        font-size: 24px;
+        font-weight: bold;
+      }
+      .header nav {
+        margin-top: 10px;
+      }
+      .header nav a {
+        color: #fff;
+        text-decoration: none;
+        margin-right: 20px;
+      }
+      .header nav a:hover {
+        color: #ccc;
+      }
+      .main-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+      }
+      .main-content section {
+        background-color: #333;
+        padding: 20px;
+        border: 1px solid #444;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      }
+      .main-content h2 {
+        margin-top: 0;
+      }
+      .footer {
+        background-color: #333;
+        color: #fff;
+        padding: 10px;
+        text-align: center;
+        clear: both;
       }
     </style>
   </head>
@@ -66,7 +113,7 @@
         <button class="btn" id="checkout-btn">Checkout</button>
       </section>
     </main>
-    <footer>
+    <footer class="footer">
       &copy; 2025 iShop &mdash; Powered by GitHub Pages
     </footer>
     
